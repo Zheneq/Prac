@@ -20,7 +20,7 @@
       <x>270</x>
       <y>0</y>
       <width>841</width>
-      <height>361</height>
+      <height>681</height>
      </rect>
     </property>
    </widget>
@@ -30,7 +30,7 @@
       <x>10</x>
       <y>10</y>
       <width>251</width>
-      <height>231</height>
+      <height>274</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -38,16 +38,16 @@
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
      <item row="0" column="0">
-      <widget class="QLabel" name="lblA">
+      <widget class="QLabel" name="lblWidth">
        <property name="text">
-        <string>A</string>
+        <string>Width</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="txtA">
+      <widget class="QLineEdit" name="txtWidth">
        <property name="text">
-        <string>4</string>
+        <string>10</string>
        </property>
       </widget>
      </item>
@@ -103,14 +103,14 @@
      <item row="7" column="0">
       <widget class="QLabel" name="lblStep">
        <property name="text">
-        <string>Step</string>
+        <string>h</string>
        </property>
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QLineEdit" name="txtStep">
+      <widget class="QLineEdit" name="txtXStep">
        <property name="text">
-        <string>0.01</string>
+        <string>1</string>
        </property>
       </widget>
      </item>
@@ -128,17 +128,17 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="9" column="0">
       <widget class="QLabel" name="lblNum">
        <property name="text">
         <string>Num</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="1">
       <widget class="QLineEdit" name="txtNum">
        <property name="text">
-        <string>1000</string>
+        <string>10</string>
        </property>
       </widget>
      </item>
@@ -156,13 +156,44 @@
        </property>
       </widget>
      </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Explicit/Implicit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QSlider" name="sdrImplicitness">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="lblStep_2">
+       <property name="text">
+        <string>tau</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLineEdit" name="txtTStep">
+       <property name="text">
+        <string>1</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QPushButton" name="btnReset">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>260</y>
+      <x>190</x>
+      <y>290</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -171,47 +202,17 @@
      <string>Reset</string>
     </property>
    </widget>
-   <widget class="PlotWidget" name="gfxPhase1">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>360</y>
-      <width>281</width>
-      <height>321</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnContinue">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>290</y>
+      <x>190</x>
+      <y>320</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Continue</string>
-    </property>
-   </widget>
-   <widget class="PlotWidget" name="gfxPhase2">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>360</y>
-      <width>281</width>
-      <height>321</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="PlotWidget" name="gfxPhase3">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>360</y>
-      <width>281</width>
-      <height>321</height>
-     </rect>
     </property>
    </widget>
   </widget>
@@ -242,7 +243,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>txtA</sender>
+   <sender>txtWidth</sender>
    <signal>editingFinished()</signal>
    <receiver>MainWindow</receiver>
    <slot>reset()</slot>

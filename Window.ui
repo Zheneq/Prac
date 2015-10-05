@@ -183,7 +183,7 @@
      <item row="8" column="1">
       <widget class="QLineEdit" name="txtTStep">
        <property name="text">
-        <string>1</string>
+        <string>0.01</string>
        </property>
       </widget>
      </item>

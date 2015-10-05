@@ -21,7 +21,7 @@ class Calc:
 
     def f(self, t, x, u):
         _u = t * math.exp(-(x-5)**2)
-        return (math.exp(-(x-5)**2) - (4*x**2 - 40*x + 98))*_u
+        return math.exp(-(x-5)**2) - (4*x**2 - 40*x + 98)*_u
 
     def x(self, ix):
         return self.xstep * ix
@@ -44,7 +44,7 @@ class Calc:
 
         self._a = [self.sigma / self.xstep**2] * self.nx
         self._b = [self.sigma / self.xstep**2] * self.nx
-        self._c = [(1 / self.tstep) - (2 * self.sigma / self.xstep**2)] * self.nx
+        self._c = [-((1 / self.tstep) + (2 * self.sigma / self.xstep**2))] * self.nx
         self._f = [-self.f(t, self.x(ix), 0) - (1 - self.sigma) * (self.y[ix+1] - 2 * self.y[ix] + self.y[ix-1]) / self.xstep**2 - self.y[ix] / self.tstep for ix in range(self.nx)]
 
         self.y = TDMA(self._a, self._b, self._c, self._f)

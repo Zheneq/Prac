@@ -52,138 +52,68 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="lblB">
-       <property name="text">
-        <string>B</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="txtB">
-       <property name="text">
-        <string>0.35</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lblC">
-       <property name="text">
-        <string>C</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="txtC">
-       <property name="text">
-        <string>0.2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblD">
-       <property name="text">
-        <string>D</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="txtD">
-       <property name="text">
-        <string>0.1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
       <widget class="QLabel" name="lblSep">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="lblStep">
        <property name="text">
         <string>h</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="2" column="1">
       <widget class="QLineEdit" name="txtXStep">
        <property name="text">
         <string>1</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="lblEps">
-       <property name="text">
-        <string>Eps</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="txtEps">
-       <property name="text">
-        <string>0.5</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="lblNum">
-       <property name="text">
-        <string>Num</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="txtNum">
-       <property name="text">
-        <string>10</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lblEps_2">
-       <property name="text">
-        <string>Q</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="txtQ">
-       <property name="text">
-        <string>1.0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Explicit/Implicit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
-      <widget class="QSlider" name="sdrImplicitness">
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="lblStep_2">
        <property name="text">
         <string>tau</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="txtTStep">
        <property name="text">
         <string>0.01</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lblNum">
+       <property name="text">
+        <string>Num</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="txtNum">
+       <property name="text">
+        <string>10</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Explicit/Implicit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSlider" name="sdrImplicitness">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -259,70 +189,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>txtB</sender>
-   <signal>editingFinished()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>reset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>46</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>555</x>
-     <y>405</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtC</sender>
-   <signal>editingFinished()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>reset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>555</x>
-     <y>405</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtD</sender>
-   <signal>editingFinished()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>reset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>98</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>555</x>
-     <y>405</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtEps</sender>
-   <signal>editingFinished()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>reset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>169</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>555</x>
-     <y>405</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnContinue</sender>
    <signal>released()</signal>
    <receiver>MainWindow</receiver>
@@ -331,22 +197,6 @@
     <hint type="sourcelabel">
      <x>217</x>
      <y>271</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>555</x>
-     <y>405</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>txtQ</sender>
-   <signal>editingFinished()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>reset()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>124</y>
     </hint>
     <hint type="destinationlabel">
      <x>555</x>

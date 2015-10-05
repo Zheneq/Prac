@@ -35,10 +35,10 @@ class MainWindow(QMainWindow):
             # (self.ui.txtD, "D"),
             # (self.ui.txtQ, "Q"),
             # (self.ui.txtEps, "EPS")
-        ]
-        self.inputs["notresetting"] = [
             (self.ui.txtXStep, "xstep"),
             (self.ui.txtTStep, "tstep"),
+        ]
+        self.inputs["notresetting"] = [
             (self.ui.txtNum, "num")
         ]
 
@@ -62,8 +62,8 @@ class MainWindow(QMainWindow):
         self.calc.sigma = self.ui.sdrImplicitness.value() / 100
 
     def reset(self):
-        self.parseinput("notresetting")
         self.parseinput("resetting")
+        self.parseinput("notresetting")
 
         self.calc.reset()
 

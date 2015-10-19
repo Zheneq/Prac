@@ -21,7 +21,7 @@ class Calc:
 
     def f(self, t, x, u):
         _u = t * math.exp(-(x-5)**2)
-        return (math.exp(-(x-5)**2) - (4*x**2 - 40*x + 98))*_u
+        return math.exp(-(x-5)**2) - (4*x**2 - 40*x + 98)*_u
 
     def x(self, ix):
         return self.xstep * ix
@@ -29,11 +29,18 @@ class Calc:
     def t(self, it):
         return self.tstep * it
 
+    def compare(self, y1, y2):
+        t = reduce(lambda x, y: x+y, map(lambda x, y: abs(x-y), y1, y2))
+        print(t)
+        return t > self.p["epsilon"]
+
     def reset(self):
         self.it = 0
         self.xstep = self.p["xstep"]
         self.tstep = self.p["tstep"]
         self.nx = int(self.p["width"] / self.xstep)
+
+        self.p["epsilon"] = 10e-7 * self.nx
 
         self.y = [0] * self.nx
 
@@ -44,9 +51,34 @@ class Calc:
 
         self._a = [self.sigma / self.xstep**2] * self.nx
         self._b = [self.sigma / self.xstep**2] * self.nx
-        self._c = [(1 / self.tstep) - (2 * self.sigma / self.xstep**2)] * self.nx
+        self._c = [-((1 / self.tstep) + (2 * self.sigma / self.xstep**2))] * self.nx
         self._f = [-self.f(t, self.x(ix), 0) - (1 - self.sigma) * (self.y[ix+1] - 2 * self.y[ix] + self.y[ix-1]) / self.xstep**2 - self.y[ix] / self.tstep for ix in range(self.nx)]
 
-        self.y = TDMA(self._a, self._b, self._c, self._f)
+        y1 = TDMA(self._a, self._b, self._c, self._f)
+
+        # Runge Rule
+        tstep2 = self.tstep * .5
+
+        # self._a = [self.sigma / self.xstep**2] * self.nx
+        # self._b = [self.sigma / self.xstep**2] * self.nx
+        self._c = [-((1 / tstep2) + (2 * self.sigma / self.xstep**2))] * self.nx
+        self._f = [-self.f(t, self.x(ix), 0) - (1 - self.sigma) * (self.y[ix+1] - 2 * self.y[ix] + self.y[ix-1]) / self.xstep**2 - self.y[ix] / tstep2 for ix in range(self.nx)]
+        y2 = TDMA(self._a, self._b, self._c, self._f)
+
+        y2.extend([.0, .0])
+        t += tstep2
+        # self._a = [self.sigma / self.xstep**2] * self.nx
+        # self._b = [self.sigma / self.xstep**2] * self.nx
+        # self._c = [-((1 / tstep2) + (2 * self.sigma / self.xstep**2))] * self.nx
+        self._f = [-self.f(t, self.x(ix), 0) - (1 - self.sigma) * (y2[ix+1] - 2 * y2[ix] + y2[ix-1]) / self.xstep**2 - y2[ix] / tstep2 for ix in range(self.nx)]
+        y2 = TDMA(self._a, self._b, self._c, self._f)
+
 
         self.it += 1
+        if self.compare(y1, y2):
+            self.y = y2
+            self.tstep = tstep2
+            self.p["tstep"] = self.tstep
+            self.it *= 2.0
+        else:
+            self.y = y1

@@ -35,10 +35,10 @@ class MainWindow(QMainWindow):
             # (self.ui.txtD, "D"),
             # (self.ui.txtQ, "Q"),
             # (self.ui.txtEps, "EPS")
-        ]
-        self.inputs["notresetting"] = [
             (self.ui.txtXStep, "xstep"),
             (self.ui.txtTStep, "tstep"),
+        ]
+        self.inputs["notresetting"] = [
             (self.ui.txtNum, "num")
         ]
 
@@ -59,11 +59,17 @@ class MainWindow(QMainWindow):
         for t in inputs:
             t[0].setText(str(self.calc.p[t[1]]))
 
-        self.calc.sigma = self.ui.sdrImplicitness.value() / 100
+        self.calc.sigma = self.ui.sdrImplicitness.value() / 100.0
+
+    def refresh(self):
+        for t in self.inputs["resetting"]:
+            t[0].setText(str(self.calc.p[t[1]]))
+        for t in self.inputs["notresetting"]:
+            t[0].setText(str(self.calc.p[t[1]]))
 
     def reset(self):
-        self.parseinput("notresetting")
         self.parseinput("resetting")
+        self.parseinput("notresetting")
 
         self.calc.reset()
 
@@ -74,6 +80,8 @@ class MainWindow(QMainWindow):
 
         for i in range(int(self.calc.p["num"])):
             self.calc.calc()
+            
+        self.refresh()
 
         drawable = np.array(self.calc.y)
         self.ui.gfxBase.plotItem.clear()

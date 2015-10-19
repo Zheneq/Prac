@@ -1,5 +1,6 @@
 import math
 from rk import *
+from tdma import *
 
 
 def f(t, y):
@@ -42,13 +43,13 @@ y = 1.0
 #     print y[0] - math.exp(x + h)
 
 # system of two equations
-fv = [f0, f1]
-yv = [0., 1.]
-for i in xrange(1, 100):
-    x = i * h
-    y = rungekuttavec(x, yv, fv, h)
-    print y[0] - math.exp(2*x) * math.sin(x)
-    print y[1] - math.exp(x) * math.cos(2*x)
+# fv = [f0, f1]
+# yv = [0., 1.]
+# for i in xrange(1, 100):
+#     x = i * h
+#     y = rungekuttavec(x, yv, fv, h)
+#     print y[0] - math.exp(2*x) * math.sin(x)
+#     print y[1] - math.exp(x) * math.cos(2*x)
 
 # # system of two equations
 # fv = [g0, g1]
@@ -58,4 +59,11 @@ for i in xrange(1, 100):
 #     y = rungekuttavec(x, yv, fv, h)
 #     print y[0] - x**2 - 3*x + 1
 #     print y[1] - 3*x**2 - 2*x - 4
+
+# x = [1, 2, 3]
+c = [5.0, -1.0, 2.0]
+b = [-2.0, 1.0, 0]
+a = [0, -1.0, -4.0]
+f = [1.0, 0.0, -2.0]
+print TDMA(a, b, c, f)
 

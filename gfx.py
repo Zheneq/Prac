@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
 
         for i in range(int(self.calc.p["num"])):
             self.calc.calc()
-            
+
         self.refresh()
 
         drawable = np.array(self.calc.y)

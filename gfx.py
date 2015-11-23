@@ -61,6 +61,20 @@ class MainWindow(QMainWindow):
 
         self.calc.sigma = self.ui.sdrImplicitness.value() / 100.0
 
+        if type == "resetting":
+            if self.ui.rbtnProbLoc.isChecked():
+                self.calc.p["prob"] = PROB_LOC
+            else:
+                self.calc.p["prob"] = PROB_DEF
+
+            if self.ui.rbtnSchemeLinear.isChecked():
+                self.calc.p["scheme"] = SCH_LIN
+            elif self.ui.rbtnSchemeIter.isChecked():
+                self.calc.p["scheme"] = SCH_ITER
+            else:
+                self.calc.p["scheme"] = SCH_NONLIN
+
+
     def refresh(self):
         for t in self.inputs["resetting"]:
             t[0].setText(str(self.calc.p[t[1]]))

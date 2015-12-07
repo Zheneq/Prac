@@ -27,45 +27,84 @@ probs = [(prob_def_y0, prob_def_k, prob_def_f, prob_def_m1, prob_def_m2),
          (prob_loc_y0, prob_loc_k, prob_loc_f, prob_loc_m1, prob_loc_m2)]
 
 
-def buildMatrix_linear(nx, h, tau, t, sigma, y, k, f):
-    _a = [sigma / h**2] * nx
-    _b = [sigma / h**2] * nx
-    _c = [-((1 / tau) + (2 * sigma / h**2))] * nx
-    _f = [-f(t, ix * h, y[ix]) - (1 - sigma) * (y[ix+1] - 2 * y[ix] + y[ix-1]) / h**2 - y[ix] / tau for ix in range(nx)]
-    return _a, _b, _c, _f
+class Method:
+    def __init__(self):
+        self.prec_deg = 1
+
+    def compare(self, y1, y2, prec):
+        return max([abs(y1[i] - y2[i]) / (2**self.prec_deg - 1) for i in xrange(len(y1))]) > prec
+
+    def calc_sub(self, nx, xstep, tstep, t, sigma, _y, k, f, m1, m2):
+        y = []
+        y.extend(_y)
+        y.extend([m2(t), m1(t)])
+        _a, _b, _c, _f = self.buildMatrix(nx, xstep, tstep, t, sigma, y, k, f)
+        return TDMA(_a, _b, _c, _f)
 
 
-def buildMatrix_nonlinear(nx, h, tau, t, sigma, y, k, f):
-    # _a = [a(t, ix * h, y[ix]) * sigma / h**2 for ix in range(nx)]
-    # _b = [a(t, (ix+1) * h, y[ix+1]) * sigma / h**2 for ix in range(nx)]
-    # _c = [-((rho(t, ix * h, y[ix]) / tau) + ((a(t, ix * h, y[ix]) + a(t, (ix+1) * h, y[ix+1])) * sigma / h**2)) for ix in range(nx)]
-    # _f = [-f(t, ix * h, y[ix]) -
-    #       ((1 - sigma) / h**2) * (a(t, (ix+1) * h, y[ix+1]) * (y[ix+1] - y[ix]) - a(t, ix * h, y[ix]) * (y[ix] - y[ix-1])) -
-    #       rho(t, ix * h, y[ix]) * y[ix] / tau for ix in range(nx)]
+class MethodLinear(Method):
+    def __init__(self):
+        Method.__init__(self)
 
-    a = lambda t, ix: 0.5 * (k(t, ix * h, y[ix]) + k(t, (ix-1) * h, y[ix-1]))
-
-    _a = [a(t, ix) * sigma / h**2 for ix in range(nx)]
-    _b = [a(t, ix+1) * sigma / h**2 for ix in range(nx)]
-    _c = [-((1 / tau) + ((a(t, ix) + a(t, ix+1)) * sigma / h**2)) for ix in range(nx)]
-    _f = [-f(t, ix * h, y[ix]) -
-          ((1 - sigma) / h**2) * (a(t, ix+1) * (y[ix+1] - y[ix]) - a(t, ix) * (y[ix] - y[ix-1])) -
-          1 * y[ix] / tau for ix in range(nx)]
-
-    return _a, _b, _c, _f
+    def buildMatrix(self, nx, h, tau, t, sigma, y, k, f):
+        _a = [sigma / h**2] * nx
+        _b = [sigma / h**2] * nx
+        _c = [-((1 / tau) + (2 * sigma / h**2))] * nx
+        _f = [-f(t, ix * h, y[ix]) - (1 - sigma) * (y[ix+1] - 2 * y[ix] + y[ix-1]) / h**2 - y[ix] / tau for ix in xrange(nx)]
+        return _a, _b, _c, _f
 
 
-def buildMatrix_iter(nx, h, tau, t, sigma, y_s, k, f, y_n):
-    a = lambda t, ix: 0.5 * (k(t, ix * h, y_s[ix]) + k(t, (ix-1) * h, y_s[ix-1]))
+class MethodNonLinear(Method):
+    def __init__(self):
+        Method.__init__(self)
 
-    _a = [-a(t, ix) / h**2 for ix in range(nx)]
-    _b = [-a(t, ix+1) / h**2 for ix in range(nx)]
-    _c = [(1 / tau) + ((a(t, ix) + a(t, ix+1)) / h**2) for ix in range(nx)]
-    _f = [f(t, ix * h, y_s[ix]) + y_n[ix] / tau for ix in range(nx)]
+    def buildMatrix(self, nx, h, tau, t, sigma, y, k, f):
+        # _a = [a(t, ix * h, y[ix]) * sigma / h**2 for ix in range(nx)]
+        # _b = [a(t, (ix+1) * h, y[ix+1]) * sigma / h**2 for ix in range(nx)]
+        # _c = [-((rho(t, ix * h, y[ix]) / tau) + ((a(t, ix * h, y[ix]) + a(t, (ix+1) * h, y[ix+1])) * sigma / h**2)) for ix in range(nx)]
+        # _f = [-f(t, ix * h, y[ix]) -
+        #       ((1 - sigma) / h**2) * (a(t, (ix+1) * h, y[ix+1]) * (y[ix+1] - y[ix]) - a(t, ix * h, y[ix]) * (y[ix] - y[ix-1])) -
+        #       rho(t, ix * h, y[ix]) * y[ix] / tau for ix in range(nx)]
 
-    return _a, _b, _c, _f
+        a = lambda t, ix: 0.5 * (k(t, ix * h, y[ix]) + k(t, (ix-1) * h, y[ix-1]))
 
-schemes = [buildMatrix_linear, buildMatrix_nonlinear, buildMatrix_iter]
+        _a = [a(t, ix) * sigma / h**2 for ix in xrange(nx)]
+        _b = [a(t, ix+1) * sigma / h**2 for ix in xrange(nx)]
+        _c = [-((1 / tau) + ((a(t, ix) + a(t, ix+1)) * sigma / h**2)) for ix in xrange(nx)]
+        _f = [-f(t, ix * h, y[ix]) -
+              ((1 - sigma) / h**2) * (a(t, ix+1) * (y[ix+1] - y[ix]) - a(t, ix) * (y[ix] - y[ix-1])) -
+              1 * y[ix] / tau for ix in xrange(nx)]
+
+        return _a, _b, _c, _f
+
+
+class MethodIter(Method):
+    def __init__(self):
+        Method.__init__(self)
+
+    def buildMatrix(self, nx, h, tau, t, sigma, y_s, k, f, y_n):
+        a = lambda _t, _ix: 0.5 * (k(_t, _ix * h, y_s[_ix]) + k(_t, (_ix-1) * h, y_s[_ix-1]))
+
+        _a = [-a(t, ix) / h**2 for ix in xrange(nx)]
+        _b = [-a(t, ix+1) / h**2 for ix in xrange(nx)]
+        _c = [(1 / tau) + ((a(t, ix) + a(t, ix+1)) / h**2) for ix in xrange(nx)]
+        _f = [f(t, ix * h, y_s[ix]) + y_n[ix] / tau for ix in xrange(nx)]
+
+        return _a, _b, _c, _f
+
+    def calc_sub(self, nx, xstep, tstep, t, sigma, _y, k, f, m1, m2):
+        y = []
+        y.extend(_y)
+        y_s = []
+        y_s.extend(_y)
+        for i in xrange(3):
+            y_s.extend([m2(t), m1(t)])
+            _a, _b, _c, _f = self.buildMatrix(nx, xstep, tstep, t, sigma, y_s, k, f, y)
+            y_s = TDMA(_a, _b, _c, _f)
+        return y_s
+
+
+methods = [MethodLinear, MethodNonLinear, MethodIter]
 
 
 class Calc:
@@ -81,20 +120,14 @@ class Calc:
         self.tstep = .0
         self.nx = 0
         self.sigma = .0
-        self.buildMatrix = buildMatrix_nonlinear
         self.y0, self.k, self.f, self.m1, self.m2 = probs[0]
-        self.useIter = False
+        self.method = methods[0]()
 
     def x(self, ix):
         return self.xstep * ix
 
     def t(self, it):
         return self.tstep * it
-
-    def compare(self, y1, y2):
-        t = reduce(lambda x, y: x+y, map(lambda x, y: abs(x-y), y1, y2))
-        print(t)
-        return t > self.p["epsilon"]
 
     def reset(self):
         self.it = 0
@@ -103,49 +136,25 @@ class Calc:
         self.nx = int(self.p["width"] / self.xstep)
 
         self.y0, self.k, self.f, self.m1, self.m2 = probs[self.p["prob"]]
-        self.buildMatrix = self.p["scheme"]
-        self.useIter = self.p["scheme"] == SCH_ITER
+        self.method = methods[self.p["scheme"]]()
 
-        # self.p["epsilon"] = 10e-7 * self.nx
-        self.p["epsilon"] = 10e+7 * self.nx
-
-        # При введении правила Рунге по h надо будет пересчитывать с меньшим шагом!
-        self.y = [self.y0(ix * self.xstep) for ix in range(self.nx)]
-
-    def calc_sub(self, t, _y, tstep):
-        if not self.useIter:
-            y = []
-            y.extend(_y)
-            y.extend([.0, .0])
-            _a, _b, _c, _f = self.buildMatrix(self.nx, self.xstep, tstep, t, self.sigma, y, self.k, self.f)
-            return TDMA(_a, _b, _c, _f)
-        else:
-            y = []
-            y.extend(_y)
-            y_s = []
-            y_s.extend(_y)
-            for i in range(3):
-                y_s.extend([.0, .0])
-                _a, _b, _c, _f = buildMatrix_iter(self.nx, self.xstep, tstep, t, self.sigma, y_s, self.k, self.f, y)
-                y_s = TDMA(_a, _b, _c, _f)
-            return y_s
+        self.y = [self.y0(ix * self.xstep) for ix in xrange(self.nx)]
 
     def calc(self):
         t = self.t(self.it)
 
-        y1 = self.calc_sub(t, self.y, self.tstep)
-
+        y1 = self.method.calc_sub(self.nx, self.xstep, self.tstep, t, self.sigma, self.y, self.k, self.f, self.m1, self.m2)
 
         # Runge Rule
         tstep2 = self.tstep * .5
 
-        y2 = self.calc_sub(t, self.y, tstep2)
-        t += tstep2
-        y2 = self.calc_sub(t, y2, tstep2)
+        y2 = self.method.calc_sub(self.nx, self.xstep, tstep2, t, self.sigma, self.y, self.k, self.f, self.m1, self.m2)
 
+        t += tstep2
+        y2 = self.method.calc_sub(self.nx, self.xstep, tstep2, t, self.sigma, y2, self.k, self.f, self.m1, self.m2)
 
         self.it += 1
-        if self.compare(y1, y2):
+        if self.method.compare(y1, y2, self.p["epsilon"]):
             self.y = y2
             self.tstep = tstep2
             self.p["tstep"] = self.tstep

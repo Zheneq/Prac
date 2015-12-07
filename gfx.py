@@ -39,7 +39,8 @@ class MainWindow(QMainWindow):
             (self.ui.txtTStep, "tstep"),
         ]
         self.inputs["notresetting"] = [
-            (self.ui.txtNum, "num")
+            (self.ui.txtNum, "num"),
+            (self.ui.txtPrec, "epsilon")
         ]
 
         self.reset()
@@ -74,7 +75,6 @@ class MainWindow(QMainWindow):
             else:
                 self.calc.p["scheme"] = SCH_NONLIN
 
-
     def refresh(self):
         for t in self.inputs["resetting"]:
             t[0].setText(str(self.calc.p[t[1]]))
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
     def cont(self):
         self.parseinput("notresetting")
 
-        for i in range(int(self.calc.p["num"])):
+        for i in xrange(int(self.calc.p["num"])):
             self.calc.calc()
 
         self.refresh()
@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
         self.ui.gfxBase.plotItem.clear()
         self.ui.gfxBase.plotItem.legend.items = []
         self.ui.gfxBase.plotItem.plot(drawable, pen=(0, 1), name="y")
+
 # -----------------------------------------------------#
 
 
